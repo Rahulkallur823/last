@@ -15,7 +15,7 @@ const Layout = ({ children, title, description, keywords, author, canonicalUrl }
         {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
       </Helmet>
       <Navbar />
-      <main style={{ width: '100%', paddingTop: '4rem', minHeight: 'calc(100vh - 6rem)' }}>
+      <main style={{ width: '100%', minHeight: 'calc(100vh - 6rem)' }}>
         {children}
       </main>
       <Footer />

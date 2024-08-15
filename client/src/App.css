@@ -1,78 +1,171 @@
-.product-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.product-slider-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .product-card {
+    padding: 15px;
+  }
+  
+  .card-inner {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     overflow: hidden;
-    background-color: #fff;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 1rem;
-}
-
-.product-card:hover {
-    transform: scale(1.03);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.product-img-wrapper {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .product-card:hover .card-inner {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  }
+  
+  .card-front {
     position: relative;
-    height: 250px;
-}
-
-.product-img {
-    height: 100%;
+  }
+  
+  .product-image {
     width: 100%;
+    height: 200px;
     object-fit: cover;
-}
-
-.discount-badge {
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .discount-tag {
     position: absolute;
-    top: 10px; /* Adjust as needed */
-    left: 10px; /* Adjust as needed */
-    background-color: #ff5722;
-    color: #fff;
-    padding: 0.5rem;
-    border-top-right-radius: 8px;
-    font-size: 0.875rem;
+    top: 10px;
+    left: 10px;
+    background-color: #ff6b6b;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
     font-weight: bold;
-}
-
-.product-body {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.product-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.product-status {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.product-rating {
-    margin-bottom: 0.5rem;
-}
-
-.product-pricing {
+  }
+  
+  .wishlist-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
-    margin-top: auto;
-}
-
-.original-price {
-    color: #999;
-    text-decoration: line-through;
-    margin-right: 0.5rem;
-    font-size: 1rem; /* Adjust as needed */
-}
-
-.discounted-price {
-    color: #ff5722;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .wishlist-btn:hover {
+    background-color: #f1f3f5;
+  }
+  
+  .card-content {
+    padding: 15px;
+  }
+  
+  .product-title {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #343a40;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .price-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .discounted-price {
+    font-size: 1.2rem;
     font-weight: bold;
-    font-size: 1.25rem; /* Adjust as needed */
-}
+    color: #2ecc71;
+  }
+  
+  .original-price {
+    font-size: 0.9rem;
+    color: #adb5bd;
+    text-decoration: line-through;
+  }
+  
+  .rating {
+    margin-bottom: 10px;
+  }
+  
+  .delivery-info {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 15px;
+  }
+  
+  .add-to-cart-btn {
+    width: 100%;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  .add-to-cart-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  .loading-text, .error-text, .no-products-text {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.1rem;
+  }
+  
+  .error-text {
+    color: #e74c3c;
+  }
+  
+  /* Slider custom styles */
+  .slick-slide > div {
+    margin: 0 10px;
+  }
+  
+  .slick-list {
+    margin: 0 -10px;
+  }
+  
+  .slick-prev, .slick-next {
+    z-index: 1;
+  }
+  
+  .slick-prev {
+    left: -25px;
+  }
+  
+  .slick-next {
+    right: -25px;
+  }
+  
+  .slick-prev:before, .slick-next:before {
+    color: #343a40;
+  }
+  
+  @media (max-width: 768px) {
+    .slick-prev {
+      left: -15px;
+    }
+  
+    .slick-next {
+      right: -15px;
+    }
+  }

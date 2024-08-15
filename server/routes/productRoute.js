@@ -5,6 +5,7 @@ const authMiddleware = require("../middlewere/auth-middlewere");
 const adminmiddlewere = require("../middlewere/admin-middlewere");
 const { createProductController, updateProductController, getProductController, getSingleProductController, productPhotoController, deleteProductController } = require("../controllers/prodcutcontroller");
 
+
 const router = express.Router();
 
 //routes

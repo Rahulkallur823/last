@@ -7,7 +7,7 @@ import electronicsImg from '../assets/ca3.png';
 import wellnessImg from '../assets/ca5.png';
 import footwearImg from '../assets/ca6.png';
 import beautyImg from '../assets/ca7.png';
-import jewelleryImg from '../assets/c7.png';
+import jewelleryImg from '../assets/chips.png';
 
 import './Categorynormal.css';
 

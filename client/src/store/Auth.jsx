@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
 
   const AuthorizationToken = `Bearer ${token}`;
 
-  // Function to store the token in local storage
   const storeTokenInLS = (serverToken) => {
     setToken(serverToken);
     localStorage.setItem("token", serverToken);
@@ -21,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const LogoutUser = () => {
     setToken("");
     localStorage.removeItem("token");
+    setUser(null); // Clear user data on logout
   };
 
   // Function to authenticate user
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:7000/api/v1/auth/user-auth", {
+      const response = await fetch("http://localhost:7000/api/v1/auth/user-info", {
         method: "GET",
         headers: {
           Authorization: AuthorizationToken,
@@ -37,14 +37,13 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        setUser(data.userData);
+        setUser(data.userData); // Ensure user data is set correctly
       } else {
         console.error("Error fetching user data", await response.text());
         LogoutUser();
-        // Optional: Redirect to login page
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error during user authentication:", error);
       LogoutUser();
     }
   };
@@ -54,7 +53,6 @@ export const AuthProvider = ({ children }) => {
     if (!token) return;
 
     try {
-      console.log('Authorization Token:', AuthorizationToken); // Debugging log
       const response = await fetch('http://localhost:7000/api/v1/admin/users', {
         method: "GET",
         headers: {
@@ -69,9 +67,6 @@ export const AuthProvider = ({ children }) => {
       }
 
       const data = await response.json();
-      console.log('Fetched data:', data); // Log the fetched data for debugging
-
-      // Assuming the API response is an array of users
       if (Array.isArray(data)) {
         setUsers(data);
       } else {
@@ -85,9 +80,10 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (isLoggedIn) {
+      userAuthentication();
       getAllUsersData();
     }
-  }, [isLoggedIn, AuthorizationToken]);
+  }, [isLoggedIn]);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, storeTokenInLS, LogoutUser, user, AuthorizationToken, users }}>
@@ -99,7 +95,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const authContextValue = useContext(AuthContext);
   if (!authContextValue) {
-    throw new Error("useAuth used outside of the Provider");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return authContextValue;
 };

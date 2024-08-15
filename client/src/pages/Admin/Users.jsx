@@ -23,9 +23,10 @@ const Users = () => {
               <tr key={index}>
                 <td>
                   <img 
-                    src="https://static-00.iconduck.com/assets.00/user-icon-2048x2048-ihoxz4vq.png" 
+                    src={`http://localhost:7000/api/v1/auth/user/photo/${user._id}`} 
                     alt="User Avatar" 
                     className="user-avatar" 
+                    onError={(e) => e.target.src="https://static-00.iconduck.com/assets.00/user-icon-2048x2048-ihoxz4vq.png"} // Fallback image
                   />
                   {user.name}
                 </td>

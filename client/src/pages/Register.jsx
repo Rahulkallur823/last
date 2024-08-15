@@ -5,7 +5,7 @@ import Layout from "../components/Layouts/Layout";
 
 export const Register = () => {
   const navigate = useNavigate();
-
+  
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -14,6 +14,8 @@ export const Register = () => {
     address: "",
     answer: "",
   });
+  
+  const [photo, setPhoto] = useState(null); // Add state for photo
 
   const { storeTokenInLS } = useAuth();
 
@@ -26,16 +28,27 @@ export const Register = () => {
     }));
   };
 
+  const handlePhotoChange = (e) => {
+    setPhoto(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Create FormData to handle file upload
+    const formData = new FormData();
+    formData.append("name", user.name);
+    formData.append("email", user.email);
+    formData.append("phone", user.phone);
+    formData.append("password", user.password);
+    formData.append("address", user.address);
+    formData.append("answer", user.answer);
+    if (photo) formData.append("photo", photo);
 
     try {
       const response = await fetch("http://localhost:7000/api/v1/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
+        body: formData,
       });
 
       if (response.ok) {
@@ -52,6 +65,7 @@ export const Register = () => {
           address: "",
           answer: "",
         });
+        setPhoto(null); // Clear photo after successful registration
 
         navigate("/login");
       } else {
@@ -129,6 +143,32 @@ export const Register = () => {
                 onChange={handleInput}
                 placeholder="Answer"
               />
+            </div>
+            
+            <div className="mb-3">
+              <label className="btn btn-outline-secondary col-md-12">
+                {photo ? photo.name : "Upload Photo"}
+                <input
+                  type="file"
+                  name="photo"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  hidden
+                />
+              </label>
+            </div>
+
+            <div className="mb-3">
+              {photo && (
+                <div className="text-center">
+                  <img
+                    src={URL.createObjectURL(photo)}
+                    alt="Uploaded preview"
+                    height="200px"
+                    className="img-fluid"
+                  />
+                </div>
+              )}
             </div>
             
             <button type="submit" className="btn btn-submit">

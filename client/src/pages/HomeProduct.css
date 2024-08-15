@@ -1,0 +1,142 @@
+.product-slider-container {
+  position: relative;
+  padding: 40px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #333;
+}
+
+.product-slide {
+  padding: 10px;
+}
+
+.slick-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.slick-arrow:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.slick-arrow:before {
+  font-size: 24px;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.slick-arrow:hover:before {
+  transform: scale(1.2);
+}
+
+.prev-arrow {
+  left: -30px;
+}
+
+.next-arrow {
+  right: -30px;
+}
+
+.slick-dots {
+  bottom: -40px;
+}
+
+.slick-dots li button:before {
+  font-size: 12px;
+  color: #333;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.slick-dots li.slick-active button:before {
+  opacity: 1;
+  transform: scale(1.2);
+  color: #007bff;
+}
+
+.loading-text, .error-text, .no-products-text {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1rem;
+}
+
+.error-text {
+  color: #e74c3c;
+}
+
+@media (max-width: 1200px) {
+  .prev-arrow {
+    left: -20px;
+  }
+
+  .next-arrow {
+    right: -20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .slick-arrow {
+    width: 50px;
+    height: 50px;
+  }
+
+  .slick-arrow:before {
+    font-size: 20px;
+  }
+
+  .prev-arrow {
+    left: -15px;
+  }
+
+  .next-arrow {
+    right: -15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .slick-arrow {
+    width: 40px;
+    height: 40px;
+  }
+
+  .slick-arrow:before {
+    font-size: 18px;
+  }
+
+  .prev-arrow {
+    left: -10px;
+  }
+
+  .next-arrow {
+    right: -10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .slick-arrow {
+    display: none !important;
+  }
+}

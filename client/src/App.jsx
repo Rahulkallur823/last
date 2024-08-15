@@ -12,6 +12,7 @@ import Product from "./pages/Admin/Product";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import UpdateProduct from "./pages/Admin/UpdateProduct";
 import Category from "./pages/Category";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="categorydemo" element={<Category />} />
+        <Route path="/profile" element={<Profile />} />
 
         <Route path="*" element={<Erro />} />
         

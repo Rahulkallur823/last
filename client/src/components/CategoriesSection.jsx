@@ -1,6 +1,6 @@
 import React from 'react';
 import { Carousel } from 'react-bootstrap';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import fashionImg from '../assets/ca1.png';
 import groceriesImg from '../assets/ca2.png';
 import electronicsImg from '../assets/ca3.png';
@@ -19,14 +19,12 @@ const categories = [
   { name: 'Jewellery', image: footwearImg },
   { name: 'Watches', image: beautyImg },
   { name: 'Beauty', image: jewelleryImg },
-  { name: 'Beauty', image: jewelleryImg },
-  { name: 'Beauty', image: jewelleryImg },
-  { name: 'Beauty', image: jewelleryImg },
-  { name: 'Beauty', image: jewelleryImg },
-  // Add more categories as needed
+  { name: 'Electronics', image: jewelleryImg },
+  { name: 'Home & Living', image: jewelleryImg },
+  { name: 'Sports & Fitness', image: jewelleryImg },
+  { name: 'Books & Stationery', image: jewelleryImg },
 ];
 
-// Function to group categories into sets of 3 or 4
 const groupCategories = (categories, itemsPerGroup) => {
   const groupedCategories = [];
   for (let i = 0; i < categories.length; i += itemsPerGroup) {
@@ -35,17 +33,18 @@ const groupCategories = (categories, itemsPerGroup) => {
   return groupedCategories;
 };
 
-const CategoriesSection = () => {
-  const itemsPerGroup = 4; // Change this to 3 if you prefer 3 items per slide
+const Category = () => {
+  const itemsPerGroup = window.innerWidth >= 992 ? 4 : window.innerWidth >= 768 ? 3 : 2;
   const groupedCategories = groupCategories(categories, itemsPerGroup);
 
   return (
-    <div className="categories-slider-wrapper">
+    <div className="categories-slider-wrapper my-5">
+      <h2 className="text-center mb-4">Shop by Category</h2>
       <Carousel
-        prevIcon={<FaArrowLeft size={30} color="#000" />}
-        nextIcon={<FaArrowRight size={30} color="#000" />}
+        prevIcon={<ChevronLeft size={40} className="carousel-icon" />}
+        nextIcon={<ChevronRight size={40} className="carousel-icon" />}
         indicators={false}
-        interval={3000}  // Set the interval to 3000ms (3 seconds)
+        interval={3000}
       >
         {groupedCategories.map((group, index) => (
           <Carousel.Item key={index}>
@@ -66,4 +65,4 @@ const CategoriesSection = () => {
   );
 };
 
-export default CategoriesSection;
+export default Category;

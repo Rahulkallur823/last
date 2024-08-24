@@ -1,172 +1,91 @@
-// const { hashPassword, comparePassword } = require("../helpers/authHelper.js");
-// const userModel = require("../models/usermodel.js");
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
+const { AuthorizationToken } = useAuth();
+const navigate = useNavigate();
+const [categories, setCategories] = useState([]);
+const [name, setName] = useState("");
+const [description, setDescription] = useState("");
+const [price, setPrice] = useState("");
+const [originalPrice, setOriginalPrice] = useState("");
+const [discountedPrice, setDiscountedPrice] = useState("");
+const [discount, setDiscount] = useState("");
+const [rating, setRating] = useState("");
+const [category, setCategory] = useState("");
+const [quantity, setQuantity] = useState("");
+const [shipping, setShipping] = useState("");
+const [photo, setPhoto] = useState("");
 
+// Get all categories
+const getAllCategories = async () => {
+  try {
+    const response = await fetch('http://localhost:7000/api/v1/category/get-category', {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthorizationToken,
+      },
+    });
 
-// const registerController = async (req, res) => {
-//   try {
-//     const { name, email, password, phone, address ,answer} = req.body;
+    if (!response.ok) { 
+      throw new Error('Network response was not ok');
+    }
 
-//     if (!name) {
-//       return res.status(400).json({ success: false, message: "Please enter a name" });
-//     }
-//     if (!email) {
-//       return res.status(400).json({ success: false, message: "Please enter an email" });
-//     }
-//     if (!password) {
-//       return res.status(400).json({ success: false, message: "Please enter a password" });
-//     }
-//     if (!phone) {
-//       return res.status(400).json({ success: false, message: "Please enter a phone number" });
-//     }
-//     if (!address) {
-//       return res.status(400).json({ success: false, message: "Please enter an address" });
-//     }
-//     if (!answer) {
-//       return res.status(400).json({ success: false, message: "Please enter an answer" });
-//     }
-//     const existingUser = await userModel.findOne({ email });
-//     if (existingUser) {
-//       return res.status(409).json({ success: false, message: "User already exists" });
-//     }
+    const data = await response.json();
+    if (data.success) {
+      setCategories(data.category);
+    } else {
+      console.log(data.message);
+      alert(data.message);
+    }
+  } catch (error) {
+    console.log('Failed to fetch categories.');
+    console.error('Failed to fetch categories:', error);
+  }
+};
 
-//     const hashedPassword = await hashPassword(password);
-//     const user = new userModel({
-//       name,
-//       email,
-//       password: hashedPassword,
-//       phone,
-//       address,
-//       answer,
-//     });
-//     await user.save();
+useEffect(() => {
+  getAllCategories();
+}, []);
 
-//     res.status(201).send({
-//       success: true,
-//       message: "User created successfully",
-//       user,
-//     });
-//     console.log(user);
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).send({ success: false, message: "Error in registration" });
-//   }
-// };
+const handleCreate = async (e) => {
+  e.preventDefault();
+  
+  try {
+    const productData = new FormData();
+    productData.append("name", name);
+    productData.append("description", description);
+    productData.append("price", price);
+    productData.append("originalPrice", originalPrice);
+    productData.append("discountedPrice", discountedPrice);
+    productData.append("discount", discount);
+    productData.append("rating", rating);
+    productData.append("quantity", quantity);
+    productData.append("photo", photo);
+    productData.append("category", category);
+    productData.append("shipping", shipping);
 
+    const response = await fetch("http://localhost:7000/api/v1/product/create-product", {
+      method: "POST",
+      headers: {
+        Authorization: AuthorizationToken,
+      },
+      body: productData,
+    });
 
-// const loginController = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     if (!email || !password) {
-//       return res.status(400).json({ success: false, message: "Invalid email or password" });
-//     }
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
 
-//     const user = await userModel.findOne({ email });
-//     if (!user) {
-//       return res.status(400).json({ success: false, message: "Email is not registered" });
-//     }
+    const data = await response.json().catch(() => {
+      throw new Error('Failed to parse JSON');
+    });
 
-//     const isMatch = await comparePassword(password, user.password);
-//     if (!isMatch) {
-//       return res.status(400).json({ success: false, message: "Invalid password" });
-//     }
-
-//     const token = jwt.sign(
-//       { id: user._id },
-//       process.env.JWT_SECRET,
-//       { expiresIn: "7d" }
-//     );
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Login successful",
-//       user: {
-//         name: user.name,
-//         email: user.email,
-//         address: user.address,
-//         phone: user.phone,
-//         role:user.role,
-//       },
-//       token,
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ success: false, message: "Server error",err });
-//   }
-// };
-
-
-
-
-
-// //testcontroller
-// const testController = async (req, res) => {
-//   console.log('protected route');
-//   res.send('protected route');
-// }
-
-
-
-//  const forgotPasswordController = async (req, res) => {
-//   try {
-//     const { email, answer, newPassword } = req.body;
-//     if (!email) {
-//       res.status(400).send({ message: "Emai is required" });
-//     }
-//     if (!answer) {
-//       res.status(400).send({ message: "answer is required" });
-//     }
-//     if (!newPassword) {
-//       res.status(400).send({ message: "New Password is required" });
-//     }
-//     //check
-//     const user = await userModel.findOne({ email, answer });
-//     //validation
-//     if (!user) {
-//       return res.status(404).send({
-//         success: false,
-//         message: "Wrong Email Or Answer",
-//       });
-//     }
-//     const hashed = await hashPassword(newPassword);
-//     await userModel.findByIdAndUpdate(user._id, { password: hashed });
-//     res.status(200).send({
-//       success: true,
-//       message: "Password Reset Successfully",
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send({
-//       success: false,
-//       message: "Something went wrong",
-//       error,
-//     });
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-// module.exports = {testController, registerController, loginController,forgotPasswordController };
-
-
-<div className="mb-3">
-            <input
-              type="password"
-              name="password"
-              value={user.password}
-              onChange={handleInput}
-              className="form-control"
-              placeholder="Enter Your password"
-              required
-            />
+    if (data.success) {
+      toast.success("Product Created Successfully");
+      navigate("/admin/product");
+    } else {
+      toast.error(data?.message || "Failed to create product");
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error("Something went wrong");
+  }
+};

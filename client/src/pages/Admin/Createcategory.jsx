@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../store/Auth';
-import CategoryForm from '../../components/Form/CategoryForm';
 import { toast } from 'react-toastify';
-import { Modal } from "antd";
+import { Modal, Button, Form, Table, Card, Container, Row, Col } from 'react-bootstrap';
+import { Edit, Delete, Add, Refresh } from '@mui/icons-material';
 
 const CreateCategory = () => {
-  const [categories, setCategories] = useState([]); // Initialize as an empty array
-  const { AuthorizationToken } = useAuth(); // Destructure AuthorizationToken from useAuth
-  const [name, setName] = useState(''); // State for name
+  const [categories, setCategories] = useState([]);
+  const { AuthorizationToken } = useAuth();
+  const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const [visible, setVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [updateName, setUpdateName] = useState(''); // Corrected variable name to updateName
+  const [updateName, setUpdateName] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +30,7 @@ const CreateCategory = () => {
       if (response.ok) {
         toast.success(`${name} category created successfully`);
         getAllCategories();
+        setName('');
       } else {
         toast.error(resdata.message || "Failed to create category");
       }
@@ -67,7 +68,7 @@ const CreateCategory = () => {
 
   useEffect(() => {
     getAllCategories();
-  }, []); // Add AuthorizationToken to the dependency array if it changes frequently
+  }, []);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -86,7 +87,7 @@ const CreateCategory = () => {
         toast.success(`${updateName} is updated`);
         setSelected(null);
         setUpdateName("");
-        setVisible(false);
+        setShowModal(false);
         getAllCategories();
       } else {
         toast.error("Something went wrong");
@@ -97,15 +98,7 @@ const CreateCategory = () => {
     }
   };
 
-
-
-
-
-
-
-
-
-  const handledelete = async (id) => {
+  const handleDelete = async (id) => {
     try {
       const response = await fetch(`http://localhost:7000/api/v1/category/delete-category/${id}`, {
         method: "DELETE",
@@ -129,43 +122,99 @@ const CreateCategory = () => {
   };
   
   return (
-    <div className="container">
-      <h1>Category List</h1>
-      <CategoryForm handleSubmit={handleSubmit} value={name} setValue={setName} />
-      {error && <p className="error">{error}</p>}
-      {categories.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((category) => (
-              <tr key={category._id}>
-                <td>{category.name}</td>
-                <td>
-                  <button className='btn btn-primary ms-2' onClick={() => {
-                    setVisible(true);
-                    setUpdateName(category.name);
-                    setSelected(category);
-                  }}>Edit</button>
-                  <button className='btn btn-danger ms-2' onClick={() => handledelete(category._id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No categories found</p>
-      )}
-  
-      <Modal onCancel={() => setVisible(false)} footer={null} visible={visible}>
-        <CategoryForm value={updateName} setValue={setUpdateName} handleSubmit={handleUpdate} />
-      </Modal>
-    </div>
-  );
-}  
+    <Container className="mt-5">
+      <Row className="justify-content-center">
+        <Col md={10}>
+          <Card className="shadow-lg border-0">
+            <Card.Body className="p-5">
+              <h1 className="text-center mb-4 text-primary">Category Management</h1>
+              <Form onSubmit={handleSubmit} className="mb-4">
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter category name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    className="form-control-lg"
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit" className="w-100 py-2" size="lg">
+                  <Add className="me-2" />
+                  Add Category
+                </Button>
+              </Form>
+              {error && <p className="text-danger">{error}</p>}
+              {categories.length > 0 ? (
+                <Table striped bordered hover responsive className="mt-4">
+                  <thead className="bg-primary text-white">
+                    <tr>
+                      <th>Name</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {categories.map((category) => (
+                      <tr key={category._id}>
+                        <td>{category.name}</td>
+                        <td>
+                          <Button
+                            variant="warning"
+                            size="sm"
+                            className="me-2"
+                            onClick={() => {
+                              setShowModal(true);
+                              setUpdateName(category.name);
+                              setSelected(category);
+                            }}
+                          >
+                            <Edit />
+                          </Button>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => handleDelete(category._id)}
+                          >
+                            <Delete />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              ) : (
+                <p className="text-center mt-4">No categories found</p>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
-export default CreateCategory;
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton className="bg-primary text-white">
+          <Modal.Title>Edit Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleUpdate}>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Enter new category name"
+                value={updateName}
+                onChange={(e) => setUpdateName(e.target.value)}
+                required
+                className="form-control-lg"
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit" className="w-100 py-2" size="lg">
+              <Refresh className="me-2" />
+              Update Category
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    </Container>
+  );
+}
+
+export default CreateCategory;  

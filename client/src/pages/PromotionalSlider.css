@@ -1,0 +1,129 @@
+.promotional-slider {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.slide-content {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.slide-image {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px; /* Rounded corners */
+  transition: transform 0.5s ease;
+}
+
+.slide-image:hover {
+  transform: scale(1.05);
+}
+
+.slide-caption {
+  padding: 20px;
+  text-align: left;
+  width: 100%;
+}
+
+.slide-caption h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.slide-caption h4 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.slide-caption .btn {
+  font-size: 1rem;
+  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 30px;
+  transition: background-color 0.3s ease;
+}
+
+.slide-caption .btn:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.slide-caption .btn .fa {
+  color: #ff6347; /* Tomato color for icons */
+  margin-right: 8px;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+}
+
+.carousel-indicators {
+  bottom: 10px;
+}
+
+@media (max-width: 992px) {
+  .slide-content {
+    height: auto; /* Allow height to adjust automatically */
+  }
+
+  .slide-caption h3 {
+    font-size: 1.6rem;
+  }
+
+  .slide-caption h4 {
+    font-size: 1.3rem;
+  }
+
+  .slide-caption .btn {
+    font-size: 0.95rem;
+    padding: 7px 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .slide-content {
+    height: auto; /* Height adjusts automatically based on content */
+  }
+
+  .slide-caption h3 {
+    font-size: 1.4rem;
+  }
+
+  .slide-caption h4 {
+    font-size: 1.2rem;
+  }
+
+  .slide-caption .btn {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .slide-content {
+    height: auto; /* Auto height for small screens */
+  }
+
+  .slide-caption h3 {
+    font-size: 1.2rem;
+  }
+
+  .slide-caption h4 {
+    font-size: 1rem;
+  }
+
+  .slide-caption .btn {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+  }
+}

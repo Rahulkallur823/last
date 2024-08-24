@@ -1,62 +1,115 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Collapse, Navbar, NavbarBrand, Nav, NavItem, NavDropdown, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { FaHome, FaChartBar, FaTag, FaProductHunt, FaUsers, FaSignOutAlt, FaCog } from 'react-icons/fa';
 
-const AdminMenu = () => {
-  const [open, setOpen] = useState(false);
+const AdminMenu = ({ open, drawerWidth }) => {
+  const [activeTab, setActiveTab] = useState(null);
+  const [isToggleSubmenu, setIsToggleSubmenu] = useState(false);
+
+  const isOpenSubmenu = (index) => {
+    setActiveTab(index);
+    setIsToggleSubmenu(!isToggleSubmenu);
+  };
 
   return (
-    <div className="d-flex">
-      <Navbar bg="light" expand="lg">
-        <NavbarBrand href="#home">Admin Menu</NavbarBrand>
-        <Button
-          onClick={() => setOpen(!open)}
-          aria-controls="basic-navbar-nav"
-          aria-expanded={open}
-          className="ms-auto"
+    <div
+      style={{
+        width: open ? drawerWidth : 0,
+        transition: 'all 0.3s ease',
+        height: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        backgroundColor: '#2c3e50', // Main sidebar background color
+        color: '#ecf0f1',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        boxShadow: open ? '2px 0 10px rgba(0, 0, 0, 0.1)' : 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        zIndex: 1000,
+      }}
+    >
+      <div
+        style={{
+          padding: '1rem',
+          borderBottom: '1px solid #34495e',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <h2
+          style={{
+            margin: 0,
+            fontSize: open ? '1.5rem' : '0',
+            opacity: open ? 1 : 0,
+            transition: 'all 0.3s ease',
+            whiteSpace: 'nowrap',
+          }}
         >
-          <span className="navbar-toggler-icon"></span>
-        </Button>
-        <Collapse in={open}>
-          <div id="basic-navbar-nav">
-            <Nav className="flex-column">
-              <NavItem>
-                <Nav.Link as={NavLink} to="/" end>
-                  Home
-                </Nav.Link>
-              </NavItem>
-              <NavItem>
-                <Nav.Link as={NavLink} to="/admin">
-                  Dashboard
-                </Nav.Link>
-              </NavItem>
-              <NavDropdown title="Categories" id="category-dropdown">
-                <NavDropdown.Item as={NavLink} to="/admin/create-category">
-                  Create Category
-                </NavDropdown.Item>
-                <NavDropdown.Item as={NavLink} to="/admin/manage-categories">
-                  Manage Categories
-                </NavDropdown.Item>
-              </NavDropdown>
-              <NavDropdown title="Products" id="product-dropdown">
-                <NavDropdown.Item as={NavLink} to="/admin/create-product">
-                  Create Product
-                </NavDropdown.Item>
-                <NavDropdown.Item as={NavLink} to="/admin/product">
-                  Manage Products
-                </NavDropdown.Item>
+          Admin Panel
+        </h2>
+      </div>
 
-              </NavDropdown>
-              <NavItem>
-                <Nav.Link as={NavLink} to="/admin/users">
-                  Users
-                </Nav.Link>
-              </NavItem>
-            </Nav>
-          </div>
-        </Collapse>
-      </Navbar>
+      <nav style={{ flexGrow: 1, padding: '1rem 0' }}>
+        {[
+          { to: "/admin/homedash", icon: <FaChartBar />, text: "Dashboard" },
+          { to: "/admin/create-category", icon: <FaTag />, text: "Categories" },
+          { to: "/admin/product", icon: <FaProductHunt />, text: "Products" },
+          { to: "/admin/create-product", icon: <FaProductHunt />, text: "Create Product" },
+          { to: "/admin/users", icon: <FaUsers />, text: "Users" },
+          { to: "/admin/settings", icon: <FaCog />, text: "Settings" },
+          { to: "/", icon: <FaHome />, text: "Home" },
+
+        ].map(({ to, icon, text }, index) => (
+          <NavLink
+            key={to}
+            to={to}
+            style={({ isActive }) => ({
+              display: 'flex',
+              alignItems: 'center',
+              padding: '0.75rem 1rem',
+              color: '#ecf0f1',
+              textDecoration: 'none',
+              transition: 'all 0.2s ease',
+              backgroundColor: isActive ? '#34495e' : 'transparent',
+              borderLeft: isActive ? '4px solid #3498db' : 'none',
+            })}
+            className={`w-100 ${activeTab === index && isToggleSubmenu ? 'active' : ''}`}
+            onClick={() => isOpenSubmenu(index)}
+          >
+            {React.cloneElement(icon, { size: 24, style: { minWidth: 24, marginRight: open ? '0.75rem' : 0 } })}
+            <span
+              style={{
+                opacity: open ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {text}
+            </span>
+          </NavLink>
+        ))}
+      </nav>
+
+      <div style={{ padding: '1rem', borderTop: '1px solid #34495e' }}>
+        <NavLink
+          to="/logout"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0.75rem 1rem',
+            color: '#e74c3c',
+            textDecoration: 'none',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <FaSignOutAlt size={24} style={{ minWidth: 24, marginRight: open ? '0.75rem' : 0 }} />
+          <span style={{ opacity: open ? 1 : 0, transition: 'opacity 0.3s ease' }}>Logout</span>
+        </NavLink>
+      </div>
     </div>
   );
 };

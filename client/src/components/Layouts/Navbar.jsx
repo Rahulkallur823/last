@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../store/Auth';
 import { ShoppingCart, User } from 'lucide-react';
+import SearchInput from '../Form/SearchInput';
 
 const Navbar = () => {
   const { isLoggedIn, user, LogoutUser } = useAuth();
@@ -12,6 +13,7 @@ const Navbar = () => {
         <NavLink to="/" className="navbar-brand">
           Rahul Shop
         </NavLink>
+        <SearchInput/>
         <button
           className="navbar-toggler"
           type="button"

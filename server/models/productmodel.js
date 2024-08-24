@@ -42,7 +42,7 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  photo: {
+  photo: { // Changed from `photo` to `photos`
     data: Buffer,
     contentType: String
   },
@@ -53,4 +53,4 @@ const productSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model("Products", productSchema);
+module.exports = mongoose.model("Product", productSchema);

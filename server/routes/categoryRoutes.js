@@ -24,10 +24,10 @@ router.post('/create-category',authMiddleware,adminmiddlewere,categoryController
   );
   
   //getALl category
-  router.get("/get-category",authMiddleware,adminmiddlewere,categoryController.categoryControlller);
+  router.get("/get-category",categoryController.categoryControlller);
   
   //single category
-  router.get("/single-category/:slug", authMiddleware,adminmiddlewere,categoryController.singleCategoryController);
+  router.get("/single-category/:slug", authMiddleware,categoryController.singleCategoryController);
   
   //delete category
   router.delete(

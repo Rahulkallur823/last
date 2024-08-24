@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 
 const Layout = ({ children, title, description, keywords, author, canonicalUrl }) => {
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Helmet>
         <meta charSet="utf-8" />
         <meta name="description" content={description} />
@@ -15,7 +15,7 @@ const Layout = ({ children, title, description, keywords, author, canonicalUrl }
         {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
       </Helmet>
       <Navbar />
-      <main style={{ width: '100%', minHeight: 'calc(100vh - 6rem)' }}>
+      <main style={{ flex: '1' }}>
         {children}
       </main>
       <Footer />

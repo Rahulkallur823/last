@@ -82,7 +82,7 @@ export const Register = () => {
     <Layout>
       <section>
         <div className="form-container">
-          <form onSubmit={handleSubmit}>
+          <form className="mt-3 mb-3" onSubmit={handleSubmit}>
             <h4 className="title">REGISTER FORM</h4>
             
             <div className="mb-3">

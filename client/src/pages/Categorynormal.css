@@ -1,39 +1,134 @@
 .categories-slider-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .category-group {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-  }
-  
+  position: relative;
+  width: 100%;
+  max-width: 75rem; /* Adjusted for max-width using rem */
+  margin: 0 auto;
+}
+
+.category-group {
+  display: flex;
+  flex-wrap: nowrap; /* Ensure items don't wrap in the carousel */
+  justify-content: space-between;
+}
+
+.category-card {
+  text-align: center;
+  padding: 0.625rem; /* Adjusted for padding using rem */
+  box-sizing: border-box; /* Include padding in the element's total width and height */
+  flex: 0 0 20%; /* Default to 5 items per slide on large screens */
+  max-width: 20%; /* Ensure cards fit within the carousel item */
+}
+
+.image-wrapper {
+  width: 100%;
+  height: 12.5rem; /* Set a consistent height for all cards using rem */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Fit the entire image within its container */
+}
+
+.category-name {
+  font-size: 1rem; /* Font size using rem */
+  font-weight: bold;
+  margin-top: 0.625rem; /* Margin using rem */
+  display: block; /* Ensure the category name is on its own line */
+  text-align: center; /* Center-align the text */
+}
+
+/* Responsive design for different screen sizes */
+
+/* Extra-small screens (phones, <576px) */
+@media (max-width: 36rem) {
   .category-card {
-    flex: 1;
-    text-align: center;
-    padding: 10px;
-    max-width: 25%; /* This ensures that each item takes up to 25% of the container */
+    flex: 0 0 33.33%; /* Three cards per row on extra-small screens */
+    max-width: 33.33%;
+    margin-bottom: 1rem; /* Margin using rem */
   }
-  
-  .category-image {
-    width: 100%;
-    height: auto;
-    max-width: 150px;
-    margin-bottom: 10px;
+
+  .image-wrapper {
+    height: 9.375rem; /* Reduced image height for small screens using rem */
   }
-  
-  .carousel-control-prev-icon,
-  .carousel-control-next-icon {
-    background-color: #ffffff;
-    border-radius: 50%;
-    padding: 10px;
+
+  .category-name {
+    font-size: 0.9rem; /* Slightly smaller text for small screens */
+    margin-top: 0.3125rem; /* Reduced top margin using rem */
   }
-  
-  .carousel-control-prev,
-  .carousel-control-next {
-    width: 50px;
+}
+
+/* Small screens (tablets, 576px - 768px) */
+@media (min-width: 36rem) and (max-width: 48rem) {
+  .category-card {
+    flex: 0 0 50%; /* Two cards per row on small screens */
+    max-width: 50%;
+    margin-bottom: 1rem; /* Margin using rem */
   }
-  
+
+  .image-wrapper {
+    height: 11.25rem; /* Adjust image height for tablets using rem */
+  }
+
+  .category-name {
+    font-size: 1rem;
+    margin-top: 0.625rem; /* Adjust margin to ensure proper spacing */
+  }
+}
+
+/* Medium screens (small laptops, 769px - 992px) */
+@media (min-width: 48rem) and (max-width: 62rem) {
+  .category-card {
+    flex: 0 0 33.33%; /* Three cards per row on medium screens */
+    max-width: 33.33%;
+    margin-bottom: 1rem; /* Margin using rem */
+  }
+
+  .image-wrapper {
+    height: 11.25rem; /* Adjust image height for medium screens using rem */
+  }
+
+  .category-name {
+    font-size: 1rem;
+    margin-top: 0.625rem; /* Ensure consistent spacing using rem */
+  }
+}
+
+/* Large screens (desktops, 993px - 1200px) */
+@media (min-width: 62rem) and (max-width: 75rem) {
+  .category-card {
+    flex: 0 0 25%; /* Four cards per row on large screens */
+    max-width: 25%;
+    margin-bottom: 1rem; /* Margin using rem */
+  }
+
+  .image-wrapper {
+    height: 12.5rem; /* Standard image height for large screens using rem */
+  }
+
+  .category-name {
+    font-size: 1rem;
+    margin-top: 0.625rem;
+  }
+}
+
+/* Extra-large screens (large desktops, >1200px) */
+@media (min-width: 75rem) {
+  .category-card {
+    flex: 0 0 20%; /* Five cards per row on extra-large screens */
+    max-width: 20%;
+    margin-bottom: 1rem; /* Margin using rem */
+  }
+
+  .image-wrapper {
+    height: 12.5rem;
+  }
+
+  .category-name {
+    font-size: 1rem;
+    margin-top: 0.625rem;
+  }
+}

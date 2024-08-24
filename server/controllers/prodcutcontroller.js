@@ -47,9 +47,11 @@ const createProductController = async (req, res) => {
       slug: slugify(name)
     });
 
-    if (photo) {
-      products.photo.data = fs.readFileSync(photo.path);
-      products.photo.contentType = photo.type;
+    if (photo && photo.path) {
+      products.photo = {
+        data: fs.readFileSync(photo.path),
+        contentType: photo.type
+      };
     }
 
     await products.save();
@@ -59,7 +61,7 @@ const createProductController = async (req, res) => {
       products
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in createProductController:", error);
     res.status(500).send({
       success: false,
       error,
@@ -67,6 +69,8 @@ const createProductController = async (req, res) => {
     });
   }
 };
+
+
 
 const getProductController = async (req, res) => {
   try {
@@ -190,9 +194,11 @@ const updateProductController = async (req, res) => {
       { new: true }
     );
 
-    if (photo) {
-      products.photo.data = fs.readFileSync(photo.path);
-      products.photo.contentType = photo.type;
+    if (photo && photo.path) {
+      products.photo = {
+        data: fs.readFileSync(photo.path),
+        contentType: photo.type
+      };
     }
 
     await products.save();
@@ -202,7 +208,7 @@ const updateProductController = async (req, res) => {
       products
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in updateProductController:", error);
     res.status(500).send({
       success: false,
       error,
@@ -211,11 +217,148 @@ const updateProductController = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
+const productFiltersController = async (req, res) => {
+  try {
+    const { checked = [], radio = [] } = req.body;
+    let filterArgs = {};
+
+    // Add category filter if any
+    if (checked.length > 0) {
+      filterArgs.category = { $in: checked };
+    }
+
+    // Add price range filter if provided
+    if (Array.isArray(radio) && radio.length === 2) {
+      const [minPrice, maxPrice] = radio;
+      // Ensure the minPrice and maxPrice are numbers and valid
+      if (!isNaN(minPrice) && !isNaN(maxPrice) && minPrice >= 0 && maxPrice >= minPrice) {
+        filterArgs.price = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+      } else {
+        return res.status(400).send({
+          success: false,
+          message: "Invalid price range",
+        });
+      }
+    }
+
+    // Fetch filtered products
+    const products = await productModel.find(filterArgs);
+
+    res.status(200).send({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    console.error("Error in filtering products:", error);
+    res.status(400).send({
+      success: false,
+      message: "Error while filtering products",
+      error: error.message,
+    });
+  }
+};
+
+
+const productcountcontroller = async (req, res) => {
+  try {
+    const total = await productModel.countDocuments(); // countDocuments is preferable for accuracy
+    res.status(200).send({
+      success: true,
+      total,
+    });
+  } catch (error) {
+    console.error("Error while counting products:", error);
+    res.status(400).send({
+      success: false,
+      message: "Error while counting products",
+      error: error.message,
+    });
+  }
+};
+
+
+
+const searchProductController = async (req, res) => {
+  try {
+    const { keyword } = req.params;
+    const resutls = await productModel
+      .find({
+        $or: [
+          { name: { $regex: keyword, $options: "i" } },
+          { description: { $regex: keyword, $options: "i" } },
+        ],
+      })
+      .select("-photo");
+    res.json(resutls);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error In Search Product API",
+      error,
+    });
+  }
+};
+
+
+
+
+
+const productListController = async (req, res) => {
+  try {
+    const perPage = 6;
+    const page = parseInt(req.params.page) || 1;
+    const products = await productModel
+      .find({})
+      .select("-photo")
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .sort({ createdAt: -1 });
+    const total = await productModel.countDocuments(); // Get total product count
+    res.status(200).send({
+      success: true,
+      products,
+      total,
+      perPage,
+      page
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "error in per page product list"
+    });
+  }
+};
+
+
 module.exports = {
   getProductController,
   createProductController,
-  deleteProductController,
-  getSingleProductController,
   updateProductController,
-  productPhotoController
+  getSingleProductController,
+  productPhotoController,
+  deleteProductController,
+  productFiltersController,
+  productListController,
+  searchProductController,
+  productcountcontroller,
 };
+
+
+
+
+
+
+
+
+
+

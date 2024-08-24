@@ -1,142 +1,165 @@
-.product-slider-container {
-  position: relative;
-  padding: 40px 0;
+.product-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 1rem;
 }
 
-.section-title {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 2rem;
-  color: #333;
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
 }
 
-.product-slide {
-  padding: 10px;
+.product-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-.slick-arrow {
+.product-link {
+  text-decoration: none;
+}
+
+.product-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  background-color: #f8f8f8;
+  overflow: hidden;
+}
+
+.product-image {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-  cursor: pointer;
-  width: 60px;
-  height: 60px;
-  display: flex !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: #4CAF50;
+  color: white;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.card-content {
+  padding: 0.8rem;
+}
+
+.product-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-description {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.4rem;
+}
+
+.price-container {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 0.4rem;
+}
+
+.discounted-price {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #4CAF50;
+  margin-right: 0.4rem;
+  text-decoration: none;
+}
+
+.original-price {
+  font-size: 0.8rem;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.rating {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  color: #fff;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.4rem;
 }
 
-.slick-arrow:hover {
-  background-color: rgba(0, 0, 0, 0.6);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.8);
-  transform: translateY(-50%) scale(1.1);
+.rating svg {
+  margin-right: 0.1rem;
 }
 
-.slick-arrow:before {
-  font-size: 24px;
-  opacity: 1;
-  transition: all 0.3s ease;
+.rating-text {
+  font-size: 0.7rem;
+  color: #666;
+  margin-left: 0.2rem;
 }
 
-.slick-arrow:hover:before {
-  transform: scale(1.2);
-}
-
-.prev-arrow {
-  left: -30px;
-}
-
-.next-arrow {
-  right: -30px;
-}
-
-.slick-dots {
-  bottom: -40px;
-}
-
-.slick-dots li button:before {
-  font-size: 12px;
-  color: #333;
-  opacity: 0.5;
-  transition: all 0.3s ease;
-}
-
-.slick-dots li.slick-active button:before {
-  opacity: 1;
-  transform: scale(1.2);
-  color: #007bff;
+.stock-info {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #4CAF50;
 }
 
 .loading-text, .error-text, .no-products-text {
   text-align: center;
-  padding: 20px;
-  font-size: 1.1rem;
-}
-
-.error-text {
-  color: #e74c3c;
-}
-
-@media (max-width: 1200px) {
-  .prev-arrow {
-    left: -20px;
-  }
-
-  .next-arrow {
-    right: -20px;
-  }
-}
-
-@media (max-width: 992px) {
-  .slick-arrow {
-    width: 50px;
-    height: 50px;
-  }
-
-  .slick-arrow:before {
-    font-size: 20px;
-  }
-
-  .prev-arrow {
-    left: -15px;
-  }
-
-  .next-arrow {
-    right: -15px;
-  }
+  margin: 2rem 0;
+  font-size: 1rem;
+  color: #666;
 }
 
 @media (max-width: 768px) {
-  .slick-arrow {
-    width: 40px;
-    height: 40px;
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 
-  .slick-arrow:before {
-    font-size: 18px;
+  .card-content {
+    padding: 0.6rem;
   }
 
-  .prev-arrow {
-    left: -10px;
+  .product-title {
+    font-size: 0.8rem;
   }
 
-  .next-arrow {
-    right: -10px;
+  .product-description {
+    font-size: 0.7rem;
   }
-}
 
-@media (max-width: 576px) {
-  .slick-arrow {
-    display: none !important;
+  .discounted-price {
+    font-size: 0.2rem;
+  } 
+
+  .original-price {
+    font-size: 0.7rem;
+  }
+
+  .rating svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .rating-text {
+    font-size: 0.6rem;
+  }
+
+  .stock-info {
+    font-size: 0.7rem;
   }
 }

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Star } from 'lucide-react';
+import { Container, Row, Col, Table, Badge, Image } from 'react-bootstrap';
 
 const ProductTable = () => {
   const [products, setProducts] = useState([]);
@@ -39,72 +40,85 @@ const ProductTable = () => {
   }, []);
 
   return (
-    <div className="container my-4">
-      <h1 className="mb-4">Products</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-danger">{error}</p>}
-      {products.length > 0 ? (
-        <div className="table-responsive">
-          <table className="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th scope="col">Image</th>
-                <th scope="col">Name</th>
-                <th scope="col">Category</th>
-
-                <th scope="col">Status</th>
-                <th scope="col">Rating</th>
-                <th scope="col">Price</th>
-
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p) => (
-                <tr key={p._id}>
-                  <td>
-                    <img
-                      src={`http://localhost:7000/api/v1/product/product-photo/${p._id}`}
-                      alt={p.name}
-                      style={{ objectFit: 'cover', height: '100px', width: '100px' }}
-                      className="img-thumbnail"
-                    />
-                  </td>
-                  <td className="text-truncate" style={{ maxWidth: '150px' }}>{p.name}</td>
-                  <td className="text-truncate" style={{ maxWidth: '150px' }}>{p.category.name}</td>
-
-                  <td className={p.quantity > 0 ? 'text-success' : 'text-danger'}>
-                    {p.quantity > 0 ? 'In Stock' : 'Out of Stock'}
-                  </td>
-                  <td>
-                    <div className="d-flex align-items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`text-${i < p.rating ? 'warning' : 'secondary'} me-1`}
-                          style={{ width: '16px', height: '16px' }}
-                        />
-                      ))}
-                    </div>
-                  </td>
-                  <td>
-                    <span className="text-muted text-decoration-line-through me-2">Rs {p.originalPrice}</span>
-                    <span className="text-danger fw-bold">Rs {p.discountedPrice}</span>
-                  </td>
-                  <td>
-                    <Link to={`admin/product/${p.slug}`} className="btn btn-primary btn-sm">
-                      View
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+    <Container className="my-5">
+      <h1 className="text-center mb-4">All Products</h1>
+      {loading ? (
+        <p className="text-center">Loading...</p>
+      ) : error ? (
+        <p className="text-center text-danger">{error}</p>
       ) : (
-        <p>No products available</p>
+        <Table striped bordered hover responsive>
+          <thead className="bg-primary text-white">
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Discount</th>
+              <th>Rating</th>
+              <th>Availability</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((p) => (
+              <tr key={p._id}>
+                <td>
+                  <Image
+                    src={`http://localhost:7000/api/v1/product/product-photo/${p._id}`}
+                    alt={p.name}
+                    thumbnail
+                    style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                  />
+                </td>
+                <td>
+                  <Link to={`/product/${p.slug}`} className="text-decoration-none text-dark">
+                    {p.name}
+                  </Link>
+                </td>
+                <td>
+                  {p.discount > 0 ? (
+                    <>
+                      <del className="text-secondary">Rs {p.originalPrice}</del>{' '}
+                      <span className="text-success">Rs {p.discountedPrice}</span>
+                    </>
+                  ) : (
+                    `Rs ${p.price}`
+                  )}
+                </td>
+                <td>
+                  {p.discount > 0 && (
+                    <Badge pill bg="success" className="px-2 py-1">
+                      {p.discount}% OFF
+                    </Badge>
+                  )}
+                </td>
+                <td>
+                  <div className="d-flex align-items-center">
+                    <Star size={18} className="text-warning me-1" />
+                    <span>{p.rating}</span>
+                  </div>
+                </td>
+                <td>
+                  <span
+                    className={`fw-bold ${p.quantity > 0 ? 'text-success' : 'text-danger'}`}
+                  >
+                    {p.quantity > 0 ? 'In Stock' : 'Out of Stock'}
+                  </span>
+                </td>
+                <td>
+                  <Link to={`/product/${p.slug}`} className="btn btn-primary btn-sm me-2">
+                    View
+                  </Link>
+                  <Link to={`/admin/product/${p.slug}`} className="btn btn-warning btn-sm">
+                    Edit
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       )}
-    </div>
+    </Container>
   );
 };
 

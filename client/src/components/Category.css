@@ -5,6 +5,10 @@
   margin: 0 auto;
 }
 
+
+.category-card{
+  text-decoration: none;
+}
 /* Left and Right Arrow Icons */
 .carousel-arrow {
   position: absolute;

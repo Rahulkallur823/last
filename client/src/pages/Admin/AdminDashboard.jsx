@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import AdminMenu from '../../components/Layouts/AdminMenu';
 import { FaBell, FaShoppingCart } from 'react-icons/fa';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
-import HomeDash from './HomeDash';
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(true);
@@ -12,11 +11,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
-        setOpen(false);
-      } else {
-        setOpen(true);
-      }
+      setOpen(window.innerWidth >= 768);
     };
 
     window.addEventListener('resize', handleResize);
@@ -33,7 +28,8 @@ const AdminDashboard = () => {
         flexGrow: 1,
         marginLeft: isMobile ? 0 : (open ? 240 : 70),
         transition: 'margin 0.3s ease',
-        overflow: 'auto'
+        overflow: 'auto',
+        backgroundColor: '#f0f2f5', // Set background color here
       }}>
         {/* Header */}
         <div style={{
@@ -76,11 +72,9 @@ const AdminDashboard = () => {
         {/* Main Content */}
         <div style={{
           padding: '1rem',
-          backgroundColor: '#f0f2f5',
-          minHeight: 'calc(100vh - 64px)',
+          minHeight: 'calc(100vh - 64px)', // Adjust height here
         }}>
-          {/* <HomeDash/> */}
-          <Outlet />
+          <Outlet /> {/* Nested routes will be rendered here */}
         </div>
       </div>
     </div>

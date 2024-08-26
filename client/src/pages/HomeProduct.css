@@ -3,6 +3,25 @@
   margin: 0 auto;
   padding: 1rem;
 }
+/* Add margin below the filter button */
+.product-container .MuiButton-outlined {
+  margin-bottom: 20px; /* Adjust the value as needed */
+}
+
+/* Add margin below the products grid */
+.product-grid {
+  margin-bottom: 20px; /* Adjust the value as needed */
+}
+
+/* Ensure there's no margin directly below the product cards */
+.product-item {
+  margin-bottom: 20px; /* Adjust the value as needed */
+}
+
+/* Optional: Add padding to the entire product container if needed */
+.product-container {
+  padding: 20px; /* Adjust the value as needed */
+}
 
 .product-grid {
   display: grid;
@@ -16,10 +35,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: all 0.3s ease;
-}
-
-.product-link {
-  text-decoration: none;
 }
 
 .product-card:hover {
@@ -47,12 +62,12 @@
 
 .discount-badge {
   position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  background-color: #4CAF50;
+  top: 10px;
+  left: 10px;
+  background-color: #00C3FF;
   color: white;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
+  padding: 2px 6px;
+  border-radius: 12px;
   font-size: 0.7rem;
   font-weight: bold;
 }
@@ -64,65 +79,46 @@
 .product-title {
   font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.3rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.product-description {
-  font-size: 0.8rem;
-  color: #666;
-  margin-bottom: 0.4rem;
-}
-
 .price-container {
   display: flex;
   align-items: baseline;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.3rem;
 }
 
 .discounted-price {
-  font-size: 1rem;
+  font-size: 0.6rem; /* Reduced from 0.65rem */
   font-weight: bold;
-  color: #4CAF50;
-  margin-right: 0.4rem;
-  text-decoration: none;
+  color: #1f1d1d;
+  margin-right: 0.3rem;
 }
 
 .original-price {
-  font-size: 0.8rem;
+  font-size: 0.55rem; /* Reduced from 0.6rem */
   color: #999;
   text-decoration: line-through;
+}
+
+.stock-info {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #4CAF50;
+  margin-bottom: 0.2rem;
 }
 
 .rating {
   display: flex;
   align-items: center;
-  margin-bottom: 0.4rem;
 }
 
-.rating svg {
-  margin-right: 0.1rem;
-}
-
-.rating-text {
-  font-size: 0.7rem;
-  color: #666;
-  margin-left: 0.2rem;
-}
-
-.stock-info {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #4CAF50;
-}
-
-.loading-text, .error-text, .no-products-text {
-  text-align: center;
-  margin: 2rem 0;
-  font-size: 1rem;
-  color: #666;
+.product-link {
+  text-decoration: none;
+  color: inherit;
 }
 
 @media (max-width: 768px) {
@@ -138,28 +134,15 @@
     font-size: 0.8rem;
   }
 
-  .product-description {
-    font-size: 0.7rem;
-  }
-
   .discounted-price {
-    font-size: 0.2rem;
-  } 
+    font-size: 0.55rem; /* Reduced from 0.6rem */
+  }
 
   .original-price {
-    font-size: 0.7rem;
-  }
-
-  .rating svg {
-    width: 10px;
-    height: 10px;
-  }
-
-  .rating-text {
-    font-size: 0.6rem;
+    font-size: 0.5rem; /* Reduced from 0.55rem */
   }
 
   .stock-info {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
   }
 }

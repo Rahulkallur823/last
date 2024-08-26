@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Layout from "../components/Layouts/Layout";
-import { FaStar, FaStarHalfAlt, FaRegStar, FaShoppingCart, FaBolt } from 'react-icons/fa';
-import './ProductDetails.css'; // Make sure to update this CSS file with the styles provided earlier
+import { FaStar, FaShoppingCart, FaBolt } from 'react-icons/fa';
+import './ProductDetails.css';
+import "./relatedproduct.css";
 
 const ProductDetails = () => {
   const params = useParams();
   const [product, setProduct] = useState({});
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [mainImage, setMainImage] = useState('');
   const [thumbnails, setThumbnails] = useState([]);
   const [selectedThumbnail, setSelectedThumbnail] = useState(0);
@@ -23,11 +25,30 @@ const ProductDetails = () => {
     try {
       const response = await fetch(`http://localhost:7000/api/v1/product/get-product/${params.slug}`);
       const data = await response.json();
-      setProduct(data?.product);
-      setMainImage(`http://localhost:7000/api/v1/product/product-photo/${data?.product._id}`);
-      setThumbnails(data?.product?.images || []);
+      if (data.success) {
+        setProduct(data.product);
+        setMainImage(`http://localhost:7000/api/v1/product/product-photo/${data.product._id}`);
+        setThumbnails(data.product.images || []);
+        getsimilarproduct(data.product._id, data.product.category._id);
+      } else {
+        console.error('Error fetching product:', data.message);
+      }
     } catch (error) {
-      console.log(error);
+      console.error('Error fetching product:', error);
+    }
+  };
+
+  const getsimilarproduct = async (pid, cid) => {
+    try {
+      const response = await fetch(`http://localhost:7000/api/v1/product/similar-product/${pid}/${cid}`);
+      const data = await response.json();
+      if (data.success) {
+        setRelatedProducts(data.products);
+      } else {
+        console.error('Error fetching related products:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching related products:', error);
     }
   };
 
@@ -51,24 +72,11 @@ const ProductDetails = () => {
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
-      if (i <= rating) {
-        stars.push(<FaStar key={i} />);
-      } else if (i - 0.5 <= rating) {
-        stars.push(<FaStarHalfAlt key={i} />);
-      } else {
-        stars.push(<FaRegStar key={i} />);
-      }
+      stars.push(
+        <FaStar key={i} className={i <= rating ? 'filled-star' : 'empty-star'} />
+      );
     }
     return stars;
-  };
-
-  // Calculate discount percentage
-  const calculateDiscount = () => {
-    if (product.originalPrice && product.discountedPrice) {
-      const discount = ((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100;
-      return Math.round(discount);
-    }
-    return 0;
   };
 
   return (
@@ -112,13 +120,13 @@ const ProductDetails = () => {
         <div className="product-info-container">
           <h1 className="product-name">{product.name}</h1>
           <div className="product-rating">
-            {renderStars(4.5)} 
+            {renderStars(product.rating)}
             <span className="product-reviews">(1,234 ratings)</span>
           </div>
           <div className="product-price">
             <span className="discounted-price">₹{product.discountedPrice}</span>
-            <span className="original-price">₹{product.originalPrice}</span>
-            <span className="discount">{calculateDiscount()}% off</span>
+            <span className="original-price">₹{product.price}</span>
+            <span className="discount">{product.discount}% off</span>
           </div>
           <div className="product-description">
             <h3>About this item</h3>
@@ -134,6 +142,44 @@ const ProductDetails = () => {
               <FaBolt /> Buy Now
             </button>
           </div>
+        </div>
+      </div>
+      <div className="related-products-section">
+        <h2>Similar Products</h2>
+        <div className="related-products-grid">
+          {relatedProducts.length > 0 ? (
+            relatedProducts.map((p) => (
+              <Link to={`/product/${p.slug}`} className="product-link" key={p._id}>
+                <div className="related-product-card">
+                  <div className="related-product-image-container">
+                    <img
+                      src={`http://localhost:7000/api/v1/product/product-photo/${p._id}`}
+                      alt={p.name}
+                      className="related-product-image"
+                    />
+                    {p.discount > 0 && (
+                      <span className="related-product-discount-badge">{p.discount}% OFF</span>
+                    )}
+                  </div>
+                  <div className="related-product-content">
+                    <h3 className="related-product-name">{p.name}</h3>
+                    <div className="related-product-price-container">
+                      <span className="related-product-discounted-price">₹{p.discountedPrice}</span>
+                      {p.discount > 0 && (
+                        <span className="related-product-original-price">₹{p.price}</span>
+                      )}
+                    </div>
+                    <div className="related-product-rating">
+                      {renderStars(p.rating)}
+                      <span className="related-product-reviews">({p.reviewCount} reviews)</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p className="no-related-products">No related products found.</p>
+          )}
         </div>
       </div>
     </Layout>

@@ -14,7 +14,6 @@ import {
 import {
   PencilSquare,
   TrashFill,
-  Upload,
   Star,
   CurrencyDollar,
   BoxSeam,
@@ -29,7 +28,6 @@ const UpdateProduct = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [originalPrice, setOriginalPrice] = useState("");
   const [discountedPrice, setDiscountedPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [rating, setRating] = useState("");
@@ -85,7 +83,6 @@ const UpdateProduct = () => {
       setId(data.product._id);
       setDescription(data.product.description);
       setPrice(data.product.price);
-      setOriginalPrice(data.product.originalPrice);
       setDiscountedPrice(data.product.discountedPrice);
       setDiscount(data.product.discount);
       setRating(data.product.rating);
@@ -106,7 +103,6 @@ const UpdateProduct = () => {
       productData.append("name", name);
       productData.append("description", description);
       productData.append("price", price);
-      productData.append("originalPrice", originalPrice);
       productData.append("discountedPrice", discountedPrice);
       productData.append("discount", discount);
       productData.append("rating", rating);
@@ -170,6 +166,14 @@ const UpdateProduct = () => {
       toast.error("Something went wrong");
     }
   };
+
+  // Calculate discounted price if both price and discount are set
+  useEffect(() => {
+    if (price && discount) {
+      const calculatedDiscountedPrice = price - (price * discount) / 100;
+      setDiscountedPrice(calculatedDiscountedPrice.toFixed(2)); // Set to 2 decimal places
+    }
+  }, [price, discount]);
 
   return (
     <Container className="my-5">
@@ -238,12 +242,12 @@ const UpdateProduct = () => {
                   </Col>
                   <Col>
                     <Form.Group className="mb-3">
-                      <Form.Label>Original Price</Form.Label>
+                      <Form.Label>Discount %</Form.Label>
                       <Form.Control
                         type="number"
-                        value={originalPrice}
-                        onChange={(e) => setOriginalPrice(e.target.value)}
-                        placeholder="Enter original price"
+                        value={discount}
+                        onChange={(e) => setDiscount(e.target.value)}
+                        placeholder="Enter discount percentage"
                       />
                     </Form.Group>
                   </Col>
@@ -278,18 +282,7 @@ const UpdateProduct = () => {
                         type="number"
                         value={discountedPrice}
                         onChange={(e) => setDiscountedPrice(e.target.value)}
-                        placeholder="Enter discounted price"
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Discount %</Form.Label>
-                      <Form.Control
-                        type="number"
-                        value={discount}
-                        onChange={(e) => setDiscount(e.target.value)}
-                        placeholder="Enter discount percentage"
+                        placeholder={price && discount ? discountedPrice : "Enter discounted price"}
                       />
                     </Form.Group>
                   </Col>
@@ -305,13 +298,11 @@ const UpdateProduct = () => {
                         type="number"
                         value={rating}
                         onChange={(e) => setRating(e.target.value)}
-                        placeholder="Enter rating"
-                        min="0"
-                        max="5"
-                        step="0.1"
+                        placeholder="Enter rating (0-5)"
                       />
                     </Form.Group>
                   </Col>
+
                   <Col>
                     <Form.Group className="mb-3">
                       <Form.Label>
@@ -322,7 +313,6 @@ const UpdateProduct = () => {
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
                         placeholder="Enter quantity"
-                        required
                       />
                     </Form.Group>
                   </Col>
@@ -331,27 +321,26 @@ const UpdateProduct = () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Shipping</Form.Label>
                   <Form.Select
-                    value={shipping ? "1" : "0"}
+                    value={shipping}
                     onChange={(e) => setShipping(e.target.value)}
-                    required
                   >
                     <option value="0">No</option>
                     <option value="1">Yes</option>
                   </Form.Select>
                 </Form.Group>
+
+                <div className="d-flex justify-content-between">
+                  <Button variant="danger" onClick={handleDelete}>
+                    <TrashFill className="me-2" />
+                    Delete
+                  </Button>
+                  <Button variant="primary" type="submit">
+                    <PencilSquare className="me-2" />
+                    Update Product
+                  </Button>
+                </div>
               </Col>
             </Row>
-
-            <div className="d-flex justify-content-between mt-4">
-              <Button variant="primary" type="submit" className="px-4">
-                <PencilSquare className="me-2" />
-                Update Product
-              </Button>
-              <Button variant="danger" onClick={handleDelete} className="px-4">
-                <TrashFill className="me-2" />
-                Delete Product
-              </Button>
-            </div>
           </Form>
         </Card.Body>
       </Card>

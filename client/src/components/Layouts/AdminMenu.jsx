@@ -15,7 +15,7 @@ const AdminMenu = ({ open, drawerWidth }) => {
     <div
       style={{
         width: open ? drawerWidth : 0,
-        transition: 'all 0.3s ease',
+        transition: 'width 0.3s ease',
         height: '100vh',
         position: 'fixed',
         top: 0,
@@ -43,7 +43,7 @@ const AdminMenu = ({ open, drawerWidth }) => {
             margin: 0,
             fontSize: open ? '1.5rem' : '0',
             opacity: open ? 1 : 0,
-            transition: 'all 0.3s ease',
+            transition: 'opacity 0.3s ease',
             whiteSpace: 'nowrap',
           }}
         >
@@ -60,7 +60,6 @@ const AdminMenu = ({ open, drawerWidth }) => {
           { to: "/admin/users", icon: <FaUsers />, text: "Users" },
           { to: "/admin/settings", icon: <FaCog />, text: "Settings" },
           { to: "/", icon: <FaHome />, text: "Home" },
-
         ].map(({ to, icon, text }, index) => (
           <NavLink
             key={to}

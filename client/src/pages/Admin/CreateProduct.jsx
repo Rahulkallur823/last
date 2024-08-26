@@ -7,98 +7,103 @@ import { BiCategoryAlt } from 'react-icons/bi';
 import { MdDescription } from 'react-icons/md';
 
 const CreateProduct = () => {
-  // ... (previous state and functions remain unchanged)
   const { AuthorizationToken } = useAuth();
-const navigate = useNavigate();
-const [categories, setCategories] = useState([]);
-const [name, setName] = useState("");
-const [description, setDescription] = useState("");
-const [price, setPrice] = useState("");
-const [originalPrice, setOriginalPrice] = useState("");
-const [discountedPrice, setDiscountedPrice] = useState("");
-const [discount, setDiscount] = useState("");
-const [rating, setRating] = useState("");
-const [category, setCategory] = useState("");
-const [quantity, setQuantity] = useState("");
-const [shipping, setShipping] = useState("");
-const [photo, setPhoto] = useState("");
+  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [discountedPrice, setDiscountedPrice] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [rating, setRating] = useState("");
+  const [category, setCategory] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [shipping, setShipping] = useState("");
+  const [photo, setPhoto] = useState("");
 
-// Get all categories
-const getAllCategories = async () => {
-  try {
-    const response = await fetch('http://localhost:7000/api/v1/category/get-category', {
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: AuthorizationToken,
-      },
-    });
+  // Get all categories
+  const getAllCategories = async () => {
+    try {
+      const response = await fetch('http://localhost:7000/api/v1/category/get-category', {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: AuthorizationToken,
+        },
+      });
 
-    if (!response.ok) { 
-      throw new Error('Network response was not ok');
+      if (!response.ok) { 
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        setCategories(data.category);
+      } else {
+        console.log(data.message);
+        alert(data.message);
+      }
+    } catch (error) {
+      console.log('Failed to fetch categories.');
+      console.error('Failed to fetch categories:', error);
     }
+  };
 
-    const data = await response.json();
-    if (data.success) {
-      setCategories(data.category);
-    } else {
-      console.log(data.message);
-      alert(data.message);
+  useEffect(() => {
+    getAllCategories();
+  }, []);
+
+  useEffect(() => {
+    // Calculate discounted price whenever price or discount changes
+    const priceValue = parseFloat(price) || 0;
+    const discountValue = parseFloat(discount) || 0;
+    const calculatedDiscountedPrice = priceValue - (priceValue * (discountValue / 100));
+    setDiscountedPrice(calculatedDiscountedPrice.toFixed(2));
+  }, [price, discount]);
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+
+    try {
+      const productData = new FormData();
+      productData.append("name", name);
+      productData.append("description", description);
+      productData.append("price", price);
+      productData.append("discountedPrice", discountedPrice);
+      productData.append("discount", discount);
+      productData.append("rating", rating);
+      productData.append("quantity", quantity);
+      productData.append("photo", photo);
+      productData.append("category", category);
+      productData.append("shipping", shipping);
+
+      const response = await fetch("http://localhost:7000/api/v1/product/create-product", {
+        method: "POST",
+        headers: {
+          Authorization: AuthorizationToken,
+        },
+        body: productData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json().catch(() => {
+        throw new Error('Failed to parse JSON');
+      });
+
+      if (data.success) {
+        toast.success("Product Created Successfully");
+        navigate("/admin/product");
+      } else {
+        toast.error(data?.message || "Failed to create product");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
     }
-  } catch (error) {
-    console.log('Failed to fetch categories.');
-    console.error('Failed to fetch categories:', error);
-  }
-};
-
-useEffect(() => {
-  getAllCategories();
-}, []);
-
-const handleCreate = async (e) => {
-  e.preventDefault();
-  
-  try {
-    const productData = new FormData();
-    productData.append("name", name);
-    productData.append("description", description);
-    productData.append("price", price);
-    productData.append("originalPrice", originalPrice);
-    productData.append("discountedPrice", discountedPrice);
-    productData.append("discount", discount);
-    productData.append("rating", rating);
-    productData.append("quantity", quantity);
-    productData.append("photo", photo);
-    productData.append("category", category);
-    productData.append("shipping", shipping);
-
-    const response = await fetch("http://localhost:7000/api/v1/product/create-product", {
-      method: "POST",
-      headers: {
-        Authorization: AuthorizationToken,
-      },
-      body: productData,
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const data = await response.json().catch(() => {
-      throw new Error('Failed to parse JSON');
-    });
-
-    if (data.success) {
-      toast.success("Product Created Successfully");
-      navigate("/admin/product");
-    } else {
-      toast.error(data?.message || "Failed to create product");
-    }
-  } catch (error) {
-    console.error(error);
-    toast.error("Something went wrong");
-  }
-};
+  };
 
   return (
     <div className="container-fluid min-vh-100 py-5" style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
@@ -191,41 +196,6 @@ const handleCreate = async (e) => {
                       <input
                         type="number"
                         className="form-control"
-                        id="originalPrice"
-                        placeholder="0"
-                        value={originalPrice}
-                        onChange={(e) => setOriginalPrice(e.target.value)}
-                      />
-                      <label htmlFor="originalPrice">
-                        <FaRupeeSign className="me-2" />
-                        Original Price
-                      </label>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="form-floating">
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="discountedPrice"
-                        placeholder="0"
-                        value={discountedPrice}
-                        onChange={(e) => setDiscountedPrice(e.target.value)}
-                      />
-                      <label htmlFor="discountedPrice">
-                        <FaRupeeSign className="me-2" />
-                        Discounted Price
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row mb-4">
-                  <div className="col-md-3">
-                    <div className="form-floating">
-                      <input
-                        type="number"
-                        className="form-control"
                         id="discount"
                         placeholder="0"
                         value={discount}
@@ -237,6 +207,25 @@ const handleCreate = async (e) => {
                       </label>
                     </div>
                   </div>
+                  <div className="col-md-4">
+                    <div className="form-floating">
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="discountedPrice"
+                        placeholder={discountedPrice || "Discounted Price"}
+                        value={discountedPrice}
+                        readOnly
+                      />
+                      <label htmlFor="discountedPrice">
+                        <FaRupeeSign className="me-2" />
+                        Discounted Price
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row mb-4">
                   <div className="col-md-3">
                     <div className="form-floating">
                       <input
@@ -290,9 +279,8 @@ const handleCreate = async (e) => {
                     </div>
                   </div>
                 </div>
-
                 <div className="mb-4">
-                  <label className="btn btn-outline-primary w-100 py-3">
+                  <label className="btn btn-outline-primary w-100 py-3 d-flex align-items-center justify-content-center">
                     <FaUpload className="me-2" />
                     {photo ? photo.name : "Upload Product Photo"}
                     <input
@@ -317,9 +305,13 @@ const handleCreate = async (e) => {
                 )}
 
                 <div className="d-grid">
-                  <button type="submit" className="btn btn-lg text-white" style={{background: 'linear-gradient(90deg, #1e3c72 0%, #2a5298 100%)'}}>
+                  <button
+                    type="submit"
+                    className="btn btn-lg text-white d-flex align-items-center justify-content-center"
+                    style={{ background: 'linear-gradient(90deg, #1e3c72 0%, #2a5298 100%)' }}
+                  >
                     <FaBox className="me-2" />
-                    Create  Product
+                    Create Product
                   </button>
                 </div>
               </form>

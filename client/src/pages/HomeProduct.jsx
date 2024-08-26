@@ -1,40 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { Star } from 'react-feather';
+import { Loader, Star } from 'react-feather';
 import './HomeProduct.css';
 import { Link } from 'react-router-dom';
 import { Drawer, Checkbox, FormControl, FormControlLabel, RadioGroup, Radio, Button, Pagination } from '@mui/material';
 
-const ProductCard = ({ title, originalPrice, discountedPrice, discount, rating, image, inStock, description }) => {
-  const truncateText = (text, length = 30) => text.length > length ? `${text.substring(0, length)}...` : text;
-
+// ProductCard Component
+const ProductCard = ({ title, originalPrice, discountedPrice, discount, rating, image, inStock }) => {
   return (
     <div className="product-card">
       <div className="image-container">
         <img src={image} alt={title} className="product-image" />
         {discount > 0 && (
-          <span className="discount-badge">{discount}% OFF</span>
+          <span className="discount-badge">{discount}%</span>
         )}
       </div>
       <div className="card-content">
-        <h3 className="product-title">{truncateText(title)}</h3>
-        <p className="product-description">{truncateText(description, 30)}</p>
+        <h3 className="product-title">{title}</h3>
         <div className="price-container">
-          <span className="discounted-price">₹{discountedPrice}</span>
+          <span className="discounted-price" style={{ fontSize: '1rem', fontWeight: 'bold', color: '#0f1111' }}>
+            ₹ {discountedPrice}
+          </span>
           {originalPrice && (
-            <span className="original-price">₹{originalPrice}</span>
+            <span className="original-price" style={{ fontSize: '1rem', color: '#999', textDecoration: 'line-through' }}>
+              ₹ {originalPrice}
+            </span>
           )}
         </div>
+        <p className="stock-info">{inStock ? 'In Stock' : 'Out of Stock'}</p>
         <div className="rating">
           {[...Array(5)].map((_, i) => (
-            <Star key={i} size={12} fill={i < Math.floor(rating) ? "#ffc107" : "none"} stroke="#ffc107" />
+            <Star key={i} size={12} fill={i < Math.floor(rating) ? "#FFA41C" : "none"} stroke="#FFA41C" />
           ))}
         </div>
-        <p className="stock-info">{inStock ? 'In Stock' : 'Out of Stock'}</p>
       </div>
     </div>
   );
 };
 
+// HomeProduct Component
 const HomeProduct = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -152,17 +155,19 @@ const HomeProduct = () => {
           <div className="filter-price">
             <FormControl component="fieldset">
               <RadioGroup
-                value={radio}
-                onChange={(e) => setRadio(e.target.value)}
+                value={radio.length ? radio[0] : ''}
+                onChange={(e) => setRadio([e.target.value])}
               >
-                <FormControlLabel value={[0, 1000]} control={<Radio />} label="₹0 - ₹1000" />
-                <FormControlLabel value={[1001, 5000]} control={<Radio />} label="₹1001 - ₹5000" />
-                <FormControlLabel value={[5001, 10000]} control={<Radio />} label="₹5001 - ₹10000" />
-                <FormControlLabel value={[10001, 50000]} control={<Radio />} label="₹10001 - ₹50000" />
+                <FormControlLabel value="[0,999]" control={<Radio />} label="₹0 - 999" />
+                <FormControlLabel value="[1000,1999]" control={<Radio />} label="1000 - 1999" />
+                <FormControlLabel value="[2000,2999]" control={<Radio />} label="₹2000 - 2999" />
+                <FormControlLabel value="[3000,30000]" control={<Radio />} label="3000 - ₹30000" />
+                <FormControlLabel value="[80,99]" control={<Radio />} label="₹80 - ₹99" />
+                <FormControlLabel value="[100,9999]" control={<Radio />} label="₹100 or more" />
               </RadioGroup>
             </FormControl>
           </div>
-
+          
           <Button variant="contained" color="primary" onClick={() => {
             setDrawerOpen(false);
             if (checked.length || radio.length) {
@@ -183,7 +188,7 @@ const HomeProduct = () => {
         </div>
       </Drawer>
 
-      {loading && <p className="loading-text">Loading...</p>}
+      {loading && <p className="loading-text"><Loader/></p>}
       {error && <p className="error-text">{error}</p>}
       {products.length > 0 ? (
         <>
@@ -213,7 +218,7 @@ const HomeProduct = () => {
           />
         </>
       ) : (
-        !loading && <p className="no-products-text">No products available</p>
+        <p>No products found.</p>
       )}
     </div>
   );

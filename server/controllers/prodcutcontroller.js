@@ -1,6 +1,7 @@
 const fs = require("fs");
 const slugify = require("slugify");
 const productModel = require("../models/productmodel");
+const categoryModel = require("../models/categorymodel");
 
 const createProductController = async (req, res) => {
   try {
@@ -11,7 +12,6 @@ const createProductController = async (req, res) => {
       category,
       quantity,
       shipping,
-      originalPrice,
       discountedPrice,
       discount,
       rating
@@ -30,8 +30,6 @@ const createProductController = async (req, res) => {
         return res.status(500).send({ error: "Category is Required" });
       case !quantity:
         return res.status(500).send({ error: "Quantity is Required" });
-      case !originalPrice:
-        return res.status(500).send({ error: "Original Price is Required" });
       case !discountedPrice:
         return res.status(500).send({ error: "Discounted Price is Required" });
       case !discount:
@@ -69,6 +67,7 @@ const createProductController = async (req, res) => {
     });
   }
 };
+
 
 
 
@@ -154,7 +153,6 @@ const updateProductController = async (req, res) => {
       category,
       quantity,
       shipping,
-      originalPrice,
       discountedPrice,
       discount,
       rating
@@ -173,8 +171,6 @@ const updateProductController = async (req, res) => {
         return res.status(500).send({ error: "Category is Required" });
       case !quantity:
         return res.status(500).send({ error: "Quantity is Required" });
-      case !originalPrice:
-        return res.status(500).send({ error: "Original Price is Required" });
       case !discountedPrice:
         return res.status(500).send({ error: "Discounted Price is Required" });
       case !discount:
@@ -236,11 +232,11 @@ const productFiltersController = async (req, res) => {
     }
 
     // Add price range filter if provided
-    if (Array.isArray(radio) && radio.length === 2) {
-      const [minPrice, maxPrice] = radio;
-      // Ensure the minPrice and maxPrice are numbers and valid
+    if (radio.length === 2) { // Ensure radio is an array with two elements
+      const [minPrice, maxPrice] = radio.map(Number); // Convert to numbers
+      // Ensure the minPrice and maxPrice are valid numbers
       if (!isNaN(minPrice) && !isNaN(maxPrice) && minPrice >= 0 && maxPrice >= minPrice) {
-        filterArgs.price = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+        filterArgs.price = { $gte: minPrice, $lte: maxPrice };
       } else {
         return res.status(400).send({
           success: false,
@@ -265,6 +261,7 @@ const productFiltersController = async (req, res) => {
     });
   }
 };
+
 
 
 const productcountcontroller = async (req, res) => {
@@ -340,6 +337,87 @@ const productListController = async (req, res) => {
 };
 
 
+
+const getrelatedproduct = async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+    const products = await productModel.find({
+      category: cid,
+      _id: { $ne: pid }
+    }).select("-photo").limit(4).populate("category");
+
+    res.status(200).send({
+      success: true,
+      products
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error in related product list"
+    });
+  }
+};
+
+const getProductsByCategoryController = async (req, res) => {
+  try {
+    // Find the category by slug
+    const category = await categoryModel.findOne({ slug: req.params.slug });
+
+    // If no category found, return an error
+    if (!category) {
+      return res.status(404).send({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    // Fetch products associated with this category's _id
+    const products = await productModel.find({ category: category._id }).populate("category").select("-photo");
+
+    // Send the response with the found products
+    res.status(200).json({
+      success: true,
+      message: `Products for category ${category.name}`,
+      products,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error in fetching products by category",
+      error: error.message,
+    });
+  }
+};
+
+
+const productCategoryController = async (req, res) => {
+  try {
+    const category = await categoryModel.findOne({ slug: req.params.slug });
+    const products = await productModel.find({ category }).populate("category");
+    res.status(200).send({
+      success: true,
+      category,
+      products,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      error,
+      message: "Error While Getting products",
+    });
+  }
+};
+
+
+
+
+// Call this function before your route handler
+// debugCategoryAndProducts();
+
+
+
 module.exports = {
   getProductController,
   createProductController,
@@ -351,6 +429,10 @@ module.exports = {
   productListController,
   searchProductController,
   productcountcontroller,
+  getrelatedproduct,
+  getProductsByCategoryController,
+  productCategoryController
+
 };
 
 

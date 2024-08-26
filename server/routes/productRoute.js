@@ -15,6 +15,10 @@ const {
   // searchproductcontroller,
   productListController,
   searchProductController,
+  getrelatedproduct,
+
+  getProductsByCategoryController,
+  productCategoryController,
 } = require("../controllers/prodcutcontroller");
 
 const router = express.Router();
@@ -34,5 +38,17 @@ router.post("/product-filters", productFiltersController);
 router.get("/product-count", productcountcontroller);
 router.get("/product-list/:page", productListController);
 router.get("/search/:keyword", searchProductController);
+
+
+// similar product
+router.get("/similar-product/:pid/:cid", getrelatedproduct);
+
+// router.get('/product-category/:slug', getProductsByCategoryController);
+router.get('/product-category/:slug', productCategoryController);
+
+
+
+
+
 
 module.exports = router;

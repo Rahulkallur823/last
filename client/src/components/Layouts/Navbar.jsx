@@ -3,9 +3,11 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../store/Auth';
 import { ShoppingCart, User } from 'lucide-react';
 import SearchInput from '../Form/SearchInput';
+import useCategory from '../../hooks/useCategory';
 
 const Navbar = () => {
   const { isLoggedIn, user, LogoutUser } = useAuth();
+  const { categories, error } = useCategory();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-lg">
@@ -13,7 +15,7 @@ const Navbar = () => {
         <NavLink to="/" className="navbar-brand">
           Rahul Shop
         </NavLink>
-        <SearchInput/>
+        <SearchInput />
         <button
           className="navbar-toggler"
           type="button"
@@ -28,20 +30,50 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
             <li className="nav-item">
-              <NavLink to="/" className="nav-link" activeclassname="active">
+              <NavLink to="/" className="nav-link" activeClassName="active">
                 Home
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink to="/categorydemo" className="nav-link" activeclassname="active">
-                Category
-              </NavLink>
+
+            {/* Categories dropdown */}
+            <li className="nav-item dropdown">
+              <a
+                className="nav-link dropdown-toggle"
+                href="#"
+                id="categoriesDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Categories
+              </a>
+              <ul className="dropdown-menu" aria-labelledby="categoriesDropdown">
+                {error ? (
+                  <li>
+                    <span className="dropdown-item">Error loading categories</span>
+                  </li>
+                ) : categories.length > 0 ? (
+                  categories.map((c) => (
+                    <li key={c._id}>
+                      <NavLink to={`/category/${c.slug}`} className="dropdown-item">
+                        {c.name}
+                      </NavLink>
+                    </li>
+                  ))
+                ) : (
+                  <li>
+                    <span className="dropdown-item">No Categories Found</span>
+                  </li>
+                )}
+              </ul>
             </li>
+
             {isLoggedIn ? (
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle d-flex align-items-center"
                   href="#"
+                  id="userDropdown"
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
@@ -57,30 +89,57 @@ const Navbar = () => {
                     <User size={32} className="text-primary" />
                   )}
                 </a>
-                <ul className="dropdown-menu dropdown-menu-end animate slideIn">
-                  <li><NavLink to="/admin" className="dropdown-item">Dashboard</NavLink></li>
-                  <li><NavLink to="/profile" className="dropdown-item">Profile</NavLink></li>
-                  <li><NavLink to="/reports" className="dropdown-item">Reports</NavLink></li>
-                  <li><hr className="dropdown-divider" /></li>
-                  <li><NavLink to="/logout" className="dropdown-item" onClick={LogoutUser}>Logout</NavLink></li>
+                <ul className="dropdown-menu dropdown-menu-end animate slideIn" aria-labelledby="userDropdown">
+                  {user && user.isAdmin ? (
+                    <li>
+                      <NavLink to="/admin/homedash" className="dropdown-item">
+                        Admin Dashboard
+                      </NavLink>
+                    </li>
+                  ) : (
+                    <li>
+                      <NavLink to="/userdash/profile" className="dropdown-item">
+                        User Dashboard
+                      </NavLink>
+                    </li>
+                  )}
+                  <li>
+                    <NavLink to="/profile" className="dropdown-item">
+                      Profile
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/reports" className="dropdown-item">
+                      Reports
+                    </NavLink>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li>
+                    <NavLink to="/" className="dropdown-item" onClick={LogoutUser}>
+                      Logout
+                    </NavLink>
+                  </li>
                 </ul>
               </li>
             ) : (
               <>
                 <li className="nav-item">
-                  <NavLink to="/register" className="nav-link" activeclassname="active">
+                  <NavLink to="/register" className="nav-link" activeClassName="active">
                     Register
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink to="/login" className="nav-link" activeclassname="active">
+                  <NavLink to="/login" className="nav-link" activeClassName="active">
                     Login
                   </NavLink>
                 </li>
               </>
             )}
+
             <li className="nav-item">
-              <NavLink to="/cart" className="nav-link position-relative" activeclassname="active">
+              <NavLink to="/cart" className="nav-link position-relative" activeClassName="active">
                 <ShoppingCart size={24} />
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                   0
